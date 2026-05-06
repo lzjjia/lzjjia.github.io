@@ -3,596 +3,293 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>L1zzj · Portfolio</title>
+  <title>李志佳 · Agent 开发工程师</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ── 全局变量 ── */
     :root {
-      --bg:        #080c14;
-      --surface:   #0e1520;
-      --border:    #1a2540;
-      --accent:    #00d9ff;
-      --accent2:   #7b5cf0;
-      --text:      #e2eaf5;
-      --muted:     #5a7090;
-      --mono:      'JetBrains Mono', monospace;
-      --sans:      'Syne', sans-serif;
+      --bg:     #faf9f7;
+      --text:   #1a1a1a;
+      --muted:  #6b7280;
+      --accent: #1d4ed8;
+      --border: #e5e7eb;
+      --serif:  'Noto Serif SC', serif;
+      --mono:   'JetBrains Mono', monospace;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--mono);
-      line-height: 1.7;
-      overflow-x: hidden;
+      font-family: var(--serif);
+      font-size: 15px;
+      line-height: 1.8;
     }
 
-    /* ── 背景网格 ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,217,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,217,255,.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
     }
 
-    /* ── 扫描线动画 ── */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: .25;
-      animation: scanline 8s linear infinite;
-      pointer-events: none;
-      z-index: 1;
-    }
-    @keyframes scanline { to { top: 200%; } }
-
-    /* ── 导航 ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 3rem;
-      background: rgba(8,12,20,.85);
-      backdrop-filter: blur(12px);
+    /* ── Header ── */
+    header {
+      padding-bottom: 2.5rem;
       border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-family: var(--sans);
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: .05em;
-      text-decoration: none;
-    }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: .8rem;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      transition: color .25s;
-    }
-    .nav-links a:hover { color: var(--accent); }
-
-    /* ── 内容容器 ── */
-    main { position: relative; z-index: 2; }
-    .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 80px;
-    }
-    .hero-inner { padding: 4rem 0; }
-
-    .tag-line {
-      display: inline-block;
-      font-size: .75rem;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: .3rem .8rem;
-      border-radius: 2px;
-      margin-bottom: 1.8rem;
-      opacity: 0;
-      animation: fadeUp .6s .2s forwards;
-    }
-
-    h1 {
-      font-family: var(--sans);
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -.02em;
-      opacity: 0;
-      animation: fadeUp .7s .4s forwards;
-    }
-    h1 .accent { color: var(--accent); }
-    h1 .dim    { color: var(--muted); }
-
-    .hero-sub {
-      margin-top: 1.5rem;
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 520px;
-      opacity: 0;
-      animation: fadeUp .7s .6s forwards;
-    }
-    .hero-sub strong { color: var(--text); }
-
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2.5rem;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp .7s .8s forwards;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .7rem 1.6rem;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: .85rem;
-      font-weight: 600;
-      letter-spacing: .05em;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all .25s;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-    }
-    .btn-primary:hover { background: #33e4ff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,217,255,.25); }
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* ── 分区标题 ── */
-    .section { padding: 6rem 0; }
-    .section-label {
-      font-size: .72rem;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: .6rem;
-    }
-    .section-title {
-      font-family: var(--sans);
-      font-size: 2rem;
-      font-weight: 800;
       margin-bottom: 3rem;
-      position: relative;
     }
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 48px;
-      height: 3px;
-      background: var(--accent);
-      margin-top: .6rem;
-      border-radius: 2px;
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      margin-bottom: .4rem;
+    }
+    .header-sub {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .header-sub span { margin-right: 1.4rem; }
+    .contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem 1.4rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+    }
+    .contacts a { color: var(--muted); }
+    .contacts a:hover { color: var(--accent); text-decoration: none; }
+
+    /* ── 分区 ── */
+    section { margin-bottom: 3rem; }
+    section h2 {
+      font-size: .68rem;
+      font-family: var(--mono);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--border);
     }
 
     /* ── 关于我 ── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-    .about-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.8rem;
-      transition: border-color .3s;
-    }
-    .about-card:hover { border-color: var(--accent); }
-    .about-card h3 {
-      font-size: .75rem;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-    .about-card p, .about-card li {
-      font-size: .88rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-    .about-card li { list-style: none; padding-left: 1rem; position: relative; }
-    .about-card li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
-    .about-card strong { color: var(--text); }
+    .about p { color: #374151; line-height: 1.9; max-width: 640px; }
 
-    /* ── 技能栈 ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
+    /* ── 教育 ── */
+    .edu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: .2rem;
+      margin-bottom: 1.1rem;
     }
-    .skill-group {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      transition: border-color .3s, transform .3s;
-    }
-    .skill-group:hover { border-color: var(--accent2); transform: translateY(-4px); }
-    .skill-group h3 {
-      font-size: .7rem;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 1rem;
-    }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .tag {
-      font-size: .75rem;
-      padding: .25rem .7rem;
-      border-radius: 3px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      transition: all .2s;
-    }
-    .tag:hover { border-color: var(--accent); color: var(--accent); }
+    .edu-item:last-child { margin-bottom: 0; }
+    .edu-left h3 { font-size: .98rem; font-weight: 600; }
+    .edu-left p  { font-size: .83rem; color: var(--muted); margin-top: .1rem; }
+    .edu-date    { font-family: var(--mono); font-size: .76rem; color: var(--muted); white-space: nowrap; }
 
-    /* ── 项目 ── */
-    .projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 2rem;
+    /* ── 项目 / 科研 ── */
+    .item {
+      margin-bottom: 2.2rem;
+      padding-bottom: 2.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin-bottom: .3rem;
+    }
+    .item-header h3 { font-size: .98rem; font-weight: 600; }
+    .item-header .role { font-family: var(--mono); font-size: .73rem; color: var(--muted); }
+    .item-date  { font-family: var(--mono); font-size: .73rem; color: var(--muted); margin-bottom: .5rem; }
+    .item-stack { font-family: var(--mono); font-size: .73rem; color: var(--accent); margin-bottom: .7rem; }
+    .item p  { font-size: .86rem; color: #374151; margin-bottom: .5rem; }
+    .item ul { padding-left: 1.2rem; font-size: .84rem; color: #4b5563; }
+    .item ul li { margin-bottom: .25rem; }
+    .item-link {
+      display: inline-block;
+      margin-top: .6rem;
+      font-family: var(--mono);
+      font-size: .73rem;
+      color: var(--muted);
+    }
+    .item-link:hover { color: var(--accent); text-decoration: none; }
+
+    /* ── 技能 ── */
+    .skill-row {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1rem;
-      align-items: start;
-      transition: border-color .3s, transform .3s;
-      text-decoration: none;
-      color: inherit;
-    }
-    .project-card:hover { border-color: var(--accent); transform: translateX(6px); }
-    .project-name {
-      font-family: var(--sans);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: .4rem;
-    }
-    .project-desc {
+      grid-template-columns: 130px 1fr;
+      gap: .35rem 1rem;
       font-size: .85rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: .8rem;
+      margin-bottom: .65rem;
+      align-items: baseline;
     }
-    .project-tags { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .project-tag {
-      font-size: .7rem;
-      padding: .2rem .6rem;
-      border-radius: 2px;
-      background: rgba(0,217,255,.08);
-      color: var(--accent);
-      border: 1px solid rgba(0,217,255,.2);
-    }
-    .project-arrow {
-      font-size: 1.2rem;
-      color: var(--muted);
-      transition: color .2s, transform .2s;
-    }
-    .project-card:hover .project-arrow { color: var(--accent); transform: translateX(4px); }
+    .skill-row:last-child { margin-bottom: 0; }
+    .skill-label { font-family: var(--mono); font-size: .73rem; color: var(--muted); }
+    .skill-val   { color: #374151; line-height: 1.75; }
 
-    /* ── 联系方式 ── */
-    #contact { padding-bottom: 8rem; }
-    .contact-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 3rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .contact-box::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 200px; height: 200px;
-      background: radial-gradient(circle, rgba(0,217,255,.08), transparent 70%);
-      pointer-events: none;
-    }
-    .contact-box p {
-      font-size: .95rem;
-      color: var(--muted);
-      margin-bottom: 2rem;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-
-    /* ── footer ── */
     footer {
       text-align: center;
-      padding: 2rem;
-      font-size: .75rem;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      position: relative;
-      z-index: 2;
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: #d1d5db;
+      padding-top: 3rem;
     }
 
-    /* ── 动画 ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .6s, transform .6s;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── 响应式 ── */
-    @media (max-width: 640px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { gap: 1rem; }
-      .about-grid { grid-template-columns: 1fr; }
-      .contact-box { padding: 2rem 1.5rem; }
+    @media (max-width: 560px) {
+      .page { padding: 2.5rem 1.2rem 4rem; }
+      .skill-row { grid-template-columns: 1fr; gap: .05rem; margin-bottom: .9rem; }
+      .skill-label { margin-bottom: .1rem; }
     }
   </style>
 </head>
 <body>
+<div class="page">
 
-  <!-- ── 导航 ── -->
-  <nav>
-    <a class="nav-logo" href="#">L1zzj</a>
-    <ul class="nav-links">
-      <li><a href="#about">关于</a></li>
-      <li><a href="#skills">技能</a></li>
-      <li><a href="#projects">项目</a></li>
-      <li><a href="#contact">联系</a></li>
-    </ul>
-  </nav>
+  <header>
+    <h1>李志佳</h1>
+    <div class="header-sub">
+      <span>Agent 开发工程师</span>
+      <span>硕士研究生 · 2027 应届</span>
+      <span>重庆邮电大学 · 通信工程</span>
+    </div>
+    <div class="contacts">
+      <a href="tel:18034774742">18034774742</a>
+      <a href="mailto:lzj_personal@163.com">lzj_personal@163.com</a>
+      <a href="https://github.com/lzjjia" target="_blank">github.com/lzjjia</a>
+      <span style="color:var(--muted)">贵州安顺</span>
+    </div>
+  </header>
 
-  <main>
-    <!-- ── HERO ── -->
-    <section id="hero">
-      <div class="container">
-        <div class="hero-inner">
-          <span class="tag-line">Available for Opportunities</span>
-          <h1>
-            Hi, I'm<br/>
-            <span class="accent">L1zzj</span>
-            <span class="dim"> /</span><br/>
-            Backend &amp; AI Dev
-          </h1>
-          <p class="hero-sub">
-            重庆邮电大学 · 硕士应届生。专注 <strong>分布式系统</strong> 与 <strong>AI Agent</strong> 开发，
-            热爱用代码构建有价值的东西。
-          </p>
-          <div class="hero-cta">
-            <a href="#projects" class="btn btn-primary">查看项目 →</a>
-            <a href="mailto:lzj_personal@163.com" class="btn btn-outline">联系我</a>
-            <a href="https://github.com/lzjjia" target="_blank" class="btn btn-outline">GitHub ↗</a>
-          </div>
-        </div>
+  <section class="about">
+    <h2>About</h2>
+    <p>
+      专注于 AI Agent 与后端系统开发，熟悉 LangGraph / LangChain 框架与 RAG 全流程工程化落地。
+      硕士期间发表 SCI 一区 TOP 论文，具备从算法研究到工程实现的完整能力。
+      热爱构建真实可用的系统，追求代码的可维护性与可观测性。
+    </p>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu-item">
+      <div class="edu-left">
+        <h3>重庆邮电大学</h3>
+        <p>通信工程 · 硕士 · 通信与信息工程学院 &nbsp;|&nbsp; top 15% &nbsp;·&nbsp; 研究生学业一等奖 · 二等奖</p>
       </div>
-    </section>
-
-    <!-- ── 关于我 ── -->
-    <section id="about" class="section">
-      <div class="container">
-        <p class="section-label">// 01</p>
-        <h2 class="section-title reveal">关于我</h2>
-        <div class="about-grid reveal">
-          <div class="about-card">
-            <h3>基本信息</h3>
-            <ul>
-              <li>🎓 <strong>重庆邮电大学</strong> 硕士（应届）</li>
-              <li>📍 重庆，中国</li>
-              <li>💼 求职方向：后端开发 / AI 应用</li>
-              <li>📧 lzj_personal@163.com</li>
-            </ul>
-          </div>
-          <div class="about-card">
-            <h3>研究方向</h3>
-            <ul>
-              <!-- ✏️ 在这里填写你的研究方向 / 论文方向 -->
-              <li>分布式系统架构设计</li>
-              <li>大语言模型应用开发</li>
-              <li>AI Agent 与 LangGraph 工作流</li>
-              <li><!-- 可继续补充 --></li>
-            </ul>
-          </div>
-          <div class="about-card" style="grid-column: 1 / -1;">
-            <h3>自我介绍</h3>
-            <p>
-              <!-- ✏️ 在这里填写你的自我介绍（2-3 句话） -->
-              我是一名热爱构建系统的开发者，擅长 C++ 与 Python，专注于后端架构与 AI 应用落地。
-              硕士期间深入研究分布式系统设计，并积极探索 LLM + Agent 的工程化实践。
-              期待加入一个有挑战性的团队，用代码创造真实价值。
-            </p>
-          </div>
-        </div>
+      <span class="edu-date">2024.09 – 2027.06</span>
+    </div>
+    <div class="edu-item">
+      <div class="edu-left">
+        <h3>西南科技大学</h3>
+        <p>通信工程 · 本科 · 信息工程学院 &nbsp;|&nbsp; GPA 3.20 / 5.0 &nbsp;·&nbsp; top 20%</p>
       </div>
-    </section>
+      <span class="edu-date">2020.09 – 2024.06</span>
+    </div>
+  </section>
 
-    <!-- ── 技能栈 ── -->
-    <section id="skills" class="section">
-      <div class="container">
-        <p class="section-label">// 02</p>
-        <h2 class="section-title reveal">技能栈</h2>
-        <div class="skills-grid reveal">
-          <div class="skill-group">
-            <h3>编程语言</h3>
-            <div class="skill-tags">
-              <span class="tag">C++</span>
-              <span class="tag">Python</span>
-              <!-- ✏️ 可添加：Go / Java / SQL 等 -->
-            </div>
-          </div>
-          <div class="skill-group">
-            <h3>框架 & 工具</h3>
-            <div class="skill-tags">
-              <span class="tag">FastAPI</span>
-              <span class="tag">SQLite</span>
-              <span class="tag">Docker</span>
-              <span class="tag">Git</span>
-              <span class="tag">Linux</span>
-              <!-- ✏️ 可添加更多 -->
-            </div>
-          </div>
-          <div class="skill-group">
-            <h3>AI / LLM</h3>
-            <div class="skill-tags">
-              <span class="tag">LangChain</span>
-              <span class="tag">LangGraph</span>
-              <span class="tag">Qwen</span>
-              <span class="tag">OpenAI API</span>
-              <!-- ✏️ 可添加：RAG / Vector DB 等 -->
-            </div>
-          </div>
-          <div class="skill-group">
-            <h3>其他</h3>
-            <div class="skill-tags">
-              <!-- ✏️ 填写：数据库、消息队列、云平台等 -->
-              <span class="tag">MySQL</span>
-              <span class="tag">Redis</span>
-              <span class="tag">REST API</span>
-            </div>
-          </div>
-        </div>
+  <section>
+    <h2>Projects</h2>
+
+    <div class="item">
+      <div class="item-header">
+        <h3>多 Agent 学术助手</h3>
+        <span class="role">项目开发负责人</span>
       </div>
-    </section>
+      <div class="item-date">2026.02 – 至今</div>
+      <div class="item-stack">Python · LangGraph · LangChain · RAG · Tool Calling · SQLite</div>
+      <p>基于 LangGraph + LangChain 开发的多 Agent 学习助手，支持路由决策、RAG 检索增强、工具调用与流式输出；引入 SQLite 长期记忆与 RAGAS 离线评估，实现可量化迭代优化。</p>
+      <ul>
+        <li>Multi-Agent：搭建 Coordinator / Planner / NoteWriter / Advisor 分工协作流程，先路由后执行的可扩展架构</li>
+        <li>RAG：接入教材与笔记双向量库（Chroma），降低纯大模型直答的幻觉风险</li>
+        <li>Memory：会话后记忆抽取与持久化（SQLite），召回学习偏好、薄弱点等长期信息</li>
+        <li>Tool Calling：集成搜索与笔记工具，支持检索 → 整理 → 保存工具链闭环</li>
+        <li>流式输出：异步 callback + queue 实现 token 级流式，展示工具调用过程</li>
+        <li>Evaluation：RAGAS 脚本对 Context Recall / Faithfulness 做离线评测，量化优化</li>
+      </ul>
+      <a class="item-link" href="https://github.com/lzjjia/-lzjjia-" target="_blank">↗ github.com/lzjjia/-lzjjia-</a>
+    </div>
 
-    <!-- ── 项目 ── -->
-    <section id="projects" class="section">
-      <div class="container">
-        <p class="section-label">// 03</p>
-        <h2 class="section-title reveal">项目经历</h2>
-        <div class="projects-list reveal">
-
-          <!-- 项目 1 -->
-          <a class="project-card" href="https://github.com/lzjjia/C-_chat_system" target="_blank">
-            <div>
-              <div class="project-name">C++ 分布式聊天系统</div>
-              <div class="project-desc">
-                基于 C++ 实现的分布式后端聊天系统，采用网关服务器、状态服务器、验证服务器等微服务架构，
-                支持高并发消息路由与分布式状态管理。
-              </div>
-              <div class="project-tags">
-                <span class="project-tag">C++</span>
-                <span class="project-tag">分布式架构</span>
-                <span class="project-tag">网关设计</span>
-                <!-- ✏️ 可补充：gRPC / Boost.Asio 等具体技术 -->
-              </div>
-            </div>
-            <span class="project-arrow">→</span>
-          </a>
-
-          <!-- 项目 2 -->
-          <a class="project-card" href="https://github.com/lzjjia/-lzjjia-" target="_blank">
-            <div>
-              <div class="project-name">TLAS · 学术学习助手</div>
-              <div class="project-desc">
-                基于 LangGraph 的命令行 AI 学习助手，支持请求智能路由，将任务分发给专业 Agent
-                输出学习计划、结构化笔记或学习建议，并支持工具调用与流式输出。
-              </div>
-              <div class="project-tags">
-                <span class="project-tag">Python</span>
-                <span class="project-tag">LangGraph</span>
-                <span class="project-tag">AI Agent</span>
-                <span class="project-tag">流式输出</span>
-              </div>
-            </div>
-            <span class="project-arrow">→</span>
-          </a>
-
-          <!-- 项目 3 -->
-          <a class="project-card" href="https://github.com/lzjjia/agent_travel_assiant" target="_blank">
-            <div>
-              <div class="project-name">智能旅行规划 Agent</div>
-              <div class="project-desc">
-                基于 FastAPI + Qwen + SQLite 的旅行规划系统，支持浏览器网页一键生成行程、
-                结构化 API 返回按天计划、会话历史查询与管理。
-              </div>
-              <div class="project-tags">
-                <span class="project-tag">Python</span>
-                <span class="project-tag">FastAPI</span>
-                <span class="project-tag">Qwen</span>
-                <span class="project-tag">SQLite</span>
-              </div>
-            </div>
-            <span class="project-arrow">→</span>
-          </a>
-
-          <!-- ✏️ 可继续添加更多项目，复制上方 project-card 结构 -->
-
-        </div>
+    <div class="item">
+      <div class="item-header">
+        <h3>基于 C++ 的仿微信即时通信系统</h3>
+        <span class="role">项目开发负责人</span>
       </div>
-    </section>
+      <div class="item-date">2025.11 – 2026.01</div>
+      <div class="item-stack">C++ · asio · gRPC · MySQL · Redis · 设计模式 · 并发编程</div>
+      <p>仿微信即时通信后端，支持用户注册登录、好友管理与消息传递。</p>
+      <ul>
+        <li>分布式设计：GateServer 网关 + ChatServer 聊天 + StatusServer 状态 + VerifyServer 验证</li>
+        <li>服务间通过 gRPC 通信，支持断线重连</li>
+        <li>GateServer 对外 HTTP 服务，登录时从 StatusServer 查询聊天服务实现负载均衡</li>
+        <li>封装 MySQL、Redis、gRPC 三套连接池，保证多服务并发访问</li>
+      </ul>
+      <a class="item-link" href="https://github.com/lzjjia/C-_chat_system" target="_blank">↗ github.com/lzjjia/C-_chat_system</a>
+    </div>
+  </section>
 
-    <!-- ── 联系方式 ── -->
-    <section id="contact" class="section">
-      <div class="container">
-        <p class="section-label">// 04</p>
-        <h2 class="section-title reveal">联系我</h2>
-        <div class="contact-box reveal">
-          <p>
-            我目前正在寻找<strong style="color:var(--text)">后端开发 / AI 应用</strong>方向的工作机会，
-            欢迎随时联系，期待与你交流！
-          </p>
-          <div class="contact-links">
-            <a href="mailto:lzj_personal@163.com" class="btn btn-primary">发送邮件 ✉</a>
-            <a href="https://github.com/lzjjia" target="_blank" class="btn btn-outline">GitHub ↗</a>
-            <!-- ✏️ 可添加：微信 / 领英 / 掘金等 -->
-          </div>
-        </div>
+  <section>
+    <h2>Research</h2>
+    <div class="item">
+      <div class="item-header">
+        <h3>面向无人机视频的无监督域适应算法研究</h3>
+        <span class="role">主要负责人</span>
       </div>
-    </section>
-  </main>
+      <div class="item-date">2024.10 – 2026.04</div>
+      <div class="item-stack">Python · PyTorch · Transformer</div>
+      <p>基于 Transformer 的视频特征提取架构，针对无人机航拍场景设计视角不变性模块、适应器（Adapter）和特征反转器，完成跨域视频动作识别任务。</p>
+      <p>
+        论文 <em>Ground-to-Aerial Scene Adaptation: Unsupervised Drone Video Action Recognition via Domain Adaptation</em>
+        已被 <strong>EAAI（SCI 一区 TOP）</strong> 接收。
+      </p>
+      <a class="item-link" href="https://authors.elsevier.com/c/1mzHs3OWJ9GHgY" target="_blank">↗ 论文链接</a>
+      &emsp;
+      <a class="item-link" href="https://github.com/lzjjia/GASA" target="_blank">↗ 代码开源</a>
+    </div>
+  </section>
 
-  <footer>
-    <p>© 2025 L1zzj · Built with ❤️ and pure HTML</p>
-  </footer>
+  <section>
+    <h2>Skills</h2>
+    <div class="skill-row">
+      <span class="skill-label">大模型 / Agent</span>
+      <span class="skill-val">LangChain、LangGraph、RAG 全流程、Chroma 向量库、Embedding 模型、LoRA 微调</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-label">LLM 优化</span>
+      <span class="skill-val">Prompt 设计、上下文管理、Token 优化策略</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-label">后端开发</span>
+      <span class="skill-val">MySQL（索引、事务）、Redis 核心数据结构、TCP/IP & UDP、网络编程、多线程、操作系统原理</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-label">编程语言</span>
+      <span class="skill-val">Python（熟练）、C++（熟练）、数据结构与算法、面向对象编程</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-label">工具链</span>
+      <span class="skill-val">Git、Linux、Docker、Cursor / Codex / Trae</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-label">语言</span>
+      <span class="skill-val">CET-6，可阅读与写作英文技术文献</span>
+    </div>
+  </section>
 
-  <script>
-    // 滚动入场动画
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.12 }
-    );
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  </script>
+</div>
+
+<footer>© 2025 李志佳 · lzjjia.github.io</footer>
 </body>
 </html>
